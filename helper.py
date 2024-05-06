@@ -1,10 +1,6 @@
 import pandas as pd
 from imblearn.over_sampling import RandomOverSampler
-from imblearn.under_sampling import RandomUnderSampler
-from sklearn.preprocessing import KBinsDiscretizer
 from imblearn.over_sampling import SMOTE
-from sklearn.utils import resample
-import numpy as np
 
 def load_and_transform(file_name: str, export: bool = False):
     to_drop = ["diagnosis", "benign_malignant"]
@@ -29,7 +25,6 @@ def load_and_transform(file_name: str, export: bool = False):
         if row[1]["anatom_site_general_challenge"] not in anatom_site_map:
             anatom_site_map[row[1]["anatom_site_general_challenge"]] = anatom_i
             anatom_i += 1
-
     df["anatom_site_general_challenge"] = df["anatom_site_general_challenge"].map(anatom_site_map)
     
     if not test: # nur wenn die Spalte vorhanden ist
@@ -40,7 +35,6 @@ def load_and_transform(file_name: str, export: bool = False):
             df = df.drop(columns=[v], axis=1)
         except:
             pass
-
     return df, anatom_site_map, gender_map
 
 
@@ -57,5 +51,4 @@ def fix_imbalance(df: pd.DataFrame): # Die Ungleichverteilung der Zielvariable i
             df_resampled, _ = smote.fit_resample(df, df['target'])
         else:
             df_resampled, _ = ros.fit_resample(df, df['target'])
-
     return df_resampled
